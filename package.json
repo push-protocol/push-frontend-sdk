@@ -146,12 +146,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ethereum-push-notification-service/epns-frontend-sdk-staging"
+    "url": "git+https://github.com/ethereum-push-notification-service/epns-frontend-sdk"
   },
   "author": "xand6r",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ethereum-push-notification-service/epns-frontend-sdk-staging"
+    "url": "https://github.com/ethereum-push-notification-service/epns-frontend-sdk"
   },
   "homepage": "https://epns.io"
 }
