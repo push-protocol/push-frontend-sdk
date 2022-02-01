@@ -59,7 +59,7 @@ const MediaHelper = {
         var match = fileURL.match(regExp);
         if (match && match[2].length == 11) {
           // embed url
-          const embedURL = 'https://www.youtube.com/embed/' + match[2] + '?autoplay=1&enablejsapi=1';
+          const embedURL = 'https://www.youtube.com/embed/' + match[2] + '?autoplay=0&enablejsapi=1';
           return embedURL;
         }
     }
