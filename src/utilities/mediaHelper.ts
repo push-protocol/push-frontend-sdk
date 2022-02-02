@@ -66,7 +66,7 @@ const MediaHelper = {
         const embedURL =
           "https://www.youtube.com/embed/" +
           match[2] +
-          "?autoplay=1&enablejsapi=1";
+          "?autoplay=0&enablejsapi=1";
         return embedURL;
       }
     }
