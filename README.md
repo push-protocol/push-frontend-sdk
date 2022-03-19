@@ -148,6 +148,38 @@ channels.optOut(
 	}
 );
 ```
+### Using the `onsubscription` modal
+This is a modal that can be used to come up immediately after a channel has been subscribed to, its main purpose is to notify the subscriber that they have several options of recieving notifications from EPNS
+
+![image](https://res.cloudinary.com/xand6r/image/upload/v1647710351/Screenshot_2022-03-19_at_18.16.48_i40rra.png)
+```Javascript
+import {
+  OnSubscribeModal,
+} from "@epnsproject/frontend-sdk";
+const [modalOpen, setModalOpen] = useState(false);
+
+return (
+    {modalOpen && <OnSubscribeModal onClose={() => setModalOpen(false)} />}
+)
+```
+### Customising the onSubscribe modal
+![image](https://res.cloudinary.com/xand6r/image/upload/v1647710738/Screenshot_2022-03-19_at_18.25.08_tmo2ch.png)
+
+- Editing the entire modal itself can be done via adding styles to the `modal` class
+- Editing the heading section can be done via adding styles to the `modal__heading` class
+- Editing the body/content section can be done via adding styles to the `modal__content` class
+
+##### However if you wish to create your own modal from scratch and just need the assets needed to make a similar modal.
+
+```Javascript
+import {
+  LINKS,
+} from "@epnsproject/frontend-sdk/dist/src/web/components/subscribemodal/constants";
+```
+
+Sample of how the data looks like
+![data](https://res.cloudinary.com/xand6r/image/upload/v1647711029/Screenshot_2022-03-19_at_18.30.13_vdfsea.png)
+Using this data, you can proceed to create your own modals
 
 ## Markdown Reference
 
