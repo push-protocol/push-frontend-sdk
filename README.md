@@ -1,8 +1,4 @@
 
-# Frontend SDK
-
-  
-  
 
 ## About
 
@@ -23,9 +19,6 @@ In order to install this SDK on your existing web application or mobile applicat
 It can be installed as an npm package via the following command.
 
 `npm install @epnsproject/frontend-sdk`
-
-for react version < 17.0.0
-`npm install @epnsproject/frontend-sdk --legacy-peer-deps`
   
   
 ### Installation for SDK Development
@@ -74,13 +67,13 @@ const itemsPerPage = 20;
 // define the variables required to make a request
 
 //fetch the notifications
-const {count, results} = await api.fetchNotifications(walletAddress, itemsPerPage, pageNumber)
-console.log({results});
+const fetchedNotifications = await api.fetchNotifications(walletAddress, itemsPerPage, pageNumber)
+console.log({fetchedNotifications]);
 //fetch the notifications
 
 
 //parse the notification fetched
-const parsedResponse = utils.parseApiResponse(results);
+const parsedResponse = utils.parseApiResponse(fetchedNotifications);
 console.log(parsedResponse);
 //parse the notification fetched
 
@@ -92,25 +85,20 @@ console.log(parsedResponse);
 import { NotificationItem } from  "@epnsproject/frontend-sdk";
 
 // This is used to render the text present in a notification body as a JSX element
-	{
-		NotificationItem.map(oneNotification => (
-			<NotificationItem
-				notificationTitle={oneNotification.title}
-				notificationBody={oneNotification.message}
-				cta={oneNotification.cta}
-				app={oneNotification.app}
-				icon={oneNotification.icon}
-				image={oneNotification.image}
-				url={oneNotification.url}
-			/>
-		))
-	}
+
+	<NotificationItem
+		notificationTitle={parsedResponse.title}
+		notificationBody={parsedResponse.message}
+		cta={parsedResponse.cta}
+		app={parsedResponse.app}
+		icon={parsedResponse.icon}
+		image={parsedResponse.image}
+	/>
  ```
  
  ![Web app render](https://res.cloudinary.com/xand6r/image/upload/v1632235676/Screenshot_2021-09-21_at_15.44.49_s6vfta.png)
  
  ### Rendering the parsed notification on a react native mobile application.
- ### All parameters are optional
  ```javascript
  import { NotificationItem} from  '@epnsproject/frontend-sdk/dist/native';
  
@@ -121,12 +109,45 @@ import { NotificationItem } from  "@epnsproject/frontend-sdk";
 			app={parsedResponse.app}
 			icon={parsedResponse.icon}
 			image={parsedResponse.image}
-			url={parsedResponse.url}
 	/>
  ```
 
  ![Mobile app render](https://res.cloudinary.com/xand6r/image/upload/v1634473272/Screenshot_2021-10-17_at_13.20.49_ig1j3y.png)
 
+## Channel methods
+
+### In order to implement signing, we take advantage of [EIP-712](https://eips.ethereum.org/EIPS/eip-712), more details on the `signer` parameter can be found [here](https://eips.ethereum.org/EIPS/eip-712), you can also take a look at our working [example](https://github.com/ethereum-push-notification-service/epns-frontend-sdk/blob/main/sample_codes/loadNotifications/src/App.js)
+```javascript
+import { channels } from  "@epnsproject/frontend-sdk";
+
+//get channel basic info
+const details = await channels.getChannelByAddress(CHANNEL_ADDRESS)
+
+//check if user is subscribed to channel
+const isSubscribed = channels.isUserSubscribed(account, CHANNEL_ADDRESS)
+
+//opt into a channel
+channels.optIn(
+	signer,
+	channelAddress,
+	chainId,
+	userAccount,
+	{
+		onSuccess: () =>  // do something after a successfull subscription, like bring up a modal or a notification
+	}
+);
+
+//opt out of a channel
+channels.optOut(
+	signer,
+	channelAddress,
+	chainId,
+	userAccount,
+	{
+		onSuccess: () =>  // do something after a successfull unsubscription, like bring up a modal or a notification
+	}
+);
+```
 
 ## Markdown Reference
 
