@@ -15,7 +15,7 @@ import ParseText from '../parseText';
 import { extractTimeStamp } from '../../../utilities/index';
 import GLOBALS from '../../../constants/globals';
 import DownloadHelper from '../../../utilities/mediaHelper';
-import config from '../../../config';
+import config from '../../../config'
 
 const ViewNotificationItem = ({
   notificationTitle = '',

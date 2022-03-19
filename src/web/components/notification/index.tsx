@@ -9,8 +9,11 @@ import ParseMarkdownText from "../parsetext";
 import MediaHelper from "../../../utilities/mediaHelper";
 import Loader from "../loader/loader";
 import { extractTimeStamp } from "../../../utilities/index";
+import ChainImages from '../../../constants/chain';
 
 // ================= Define types
+type chainNameType = "ETH_TEST_KOVAN" | "POLYGON_TEST_MUMBAI" | undefined;
+
 export type NotificationItemProps = {
   notificationTitle: string | undefined;
   notificationBody: string | undefined;
@@ -21,8 +24,11 @@ export type NotificationItemProps = {
   url: string | undefined;
   isSpam: boolean | undefined;
   subscribeFn: any;
-  isSubscribedFn: any
+  isSubscribedFn: any,
+  theme: string | undefined
+  chainName: chainNameType
 };
+
 
 type ContainerDataType = {
   cta?: boolean;
@@ -45,11 +51,19 @@ const ViewNotificationItem: React.FC<NotificationItemProps> = ({
   isSpam, //for rendering the spam conterpart of the notification component
   isSubscribedFn, //A function for getting if a user is subscribed to the channel in question
   subscribeFn, //A function for subscribing to the spam channel
+  theme, //for specifying light and dark theme
+  chainName
 }) => {
   const { notificationBody: parsedBody, timeStamp } = extractTimeStamp(
     notificationBody || ""
   );
+  const rightIcon = chainName && ChainImages['CHAIN_ICONS'][chainName]; //get the right chain id to render if any
 
+  console.log({
+    chainName,
+    rightIcon,
+    ai: ChainImages['CHAIN_ICONS']
+  })
   const gotToCTA = (e: any) => {
     e.stopPropagation();
     if (!MediaHelper.validURL(cta)) return;
@@ -97,16 +111,28 @@ const ViewNotificationItem: React.FC<NotificationItemProps> = ({
       timestamp={timeStamp}
       cta={MediaHelper.validURL(cta)}
       onClick={gotToCTA}
+      theme={theme}
     >
       {/* header that only pops up on small devices */}
-      <MobileHeader onClick={goToURL}>
+      <MobileHeader onClick={goToURL} theme={theme}>
         <HeaderButton>
           <ImageContainer>
             <IPFSIcon icon={icon} />
           </ImageContainer>
           {app}
         </HeaderButton>
-      </MobileHeader>
+        {
+          rightIcon && (
+            <HeaderImg src={rightIcon}/>
+          )
+        }
+       {/* {
+         isPoly?
+       
+        :
+        <HeaderImg src="https://backend-kovan.epns.io/assets/ethereum.org.ico" alt=""/>
+       } */}
+        </MobileHeader>
       {/* header that only pops up on small devices */}
 
       {/* content of the component */}
@@ -146,10 +172,10 @@ const ViewNotificationItem: React.FC<NotificationItemProps> = ({
         {/* section for text content */}
         <ChannelDetailsWrapper>
           <ChannelTitle>
-            <ChannelTitleLink>{notificationTitle}</ChannelTitleLink>
+            <ChannelTitleLink theme={theme}>{notificationTitle}</ChannelTitleLink>
           </ChannelTitle>
           <ChannelDesc>
-            <ChannelDescLabel>
+            <ChannelDescLabel theme={theme}>
               <ParseMarkdownText text={parsedBody} />
             </ChannelDescLabel>
           </ChannelDesc>
@@ -170,7 +196,7 @@ const ViewNotificationItem: React.FC<NotificationItemProps> = ({
       <ChannelMeta hidden={!timeStamp}>
         <>
           <Pool>
-            <PoolShare>
+            <PoolShare theme = {theme}>
               {timeStamp
                 ? moment
                     .utc(parseInt(timeStamp) * 1000)
@@ -203,7 +229,8 @@ ViewNotificationItem.propTypes = {
   url: PropTypes.string,
   isSpam: PropTypes.bool,
   subscribeFn: PropTypes.func,
-  isSubscribedFn: PropTypes.func
+  isSubscribedFn: PropTypes.func,
+  theme: PropTypes.string
 };
 
 ViewNotificationItem.defaultProps = {
@@ -215,7 +242,8 @@ ViewNotificationItem.defaultProps = {
   url: "",
   isSpam: false,
   subscribeFn: null,
-  isSubscribedFn: null
+  isSubscribedFn: null,
+  theme: "light",
 };
 
 // ================= Define styled components
@@ -231,6 +259,11 @@ const ContentSection = styled.div`
     flex-direction: row;
     gap: 20px;
   }
+`;
+
+const HeaderImg=styled.img`
+  width: 30px;
+  height:30px;
 `;
 
 const MobileImage = styled.div`
@@ -288,7 +321,7 @@ const Container = styled.div<ContainerDataType>`
       : "1px solid rgba(231.0, 231.0, 231.0, 1);"};
   cursor: ${(props) => (props.cta ? "pointer" : "")};
 
-  background: #fff;
+  background: ${(props) => (props.theme === "light" ? "#fff" : "#000")};
   border-radius: 10px;
 
   margin: 15px 0px;
@@ -311,6 +344,7 @@ const MobileHeader = styled.div`
     display: flex;
     align-items: center;
     position: absolute;
+    justify-content:space-between;  
     top: 0;
     left: 0;
     right: 0;
@@ -318,7 +352,7 @@ const MobileHeader = styled.div`
     font-size: 14px;
     border-bottom: 1px solid rgba(231, 231, 231, 1);
     color: grey;
-    background: rgba(250, 250, 250, 1);
+    background: ${(props) => (props.theme === "light" ? "rgba(250, 250, 250, 1)" : "#000")};
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     text-align: left;
@@ -344,7 +378,7 @@ const ChannelTitleLink = styled.a`
 
   @media (max-width: ${MD_BREAKPOINT}) {
     font-weight: 300;
-    color: rgba(0, 0, 0, 0.5);
+    color: ${(props) => (props.theme === "light" ? "rgba(0, 0, 0, 0.5)" : "grey")};
   }
 `;
 
@@ -359,6 +393,7 @@ const ChannelDesc = styled.div`
 `;
 
 const ChannelDescLabel = styled.label`
+  color: ${(props) => (props.theme === "light" ? "#000" : "#fff")};
   flex: 1;
   margin: 0px;
   // font-weight: 600;
@@ -388,7 +423,7 @@ const Pool = styled.div`
 `;
 
 const PoolShare = styled(ChannelMetaBox)`
-  background: #674c9f;
+  background: ${(props) => (props.theme === "light" ? "#674c9f" : "#000")};
   @media (max-width: ${MD_BREAKPOINT}) {
     position: absolute;
     bottom: 0;
@@ -396,7 +431,7 @@ const PoolShare = styled(ChannelMetaBox)`
     border-radius: 0;
     border-radius: 8px 0;
     color: grey;
-    background: rgba(250, 250, 250, 1);
+    background: ${(props) => (props.theme === "light" ? "rgba(250, 250, 250, 1)" : "#000")};
     border-top: 1px solid rgba(231, 231, 231, 1);
     border-left: 1px solid rgba(231, 231, 231, 1);
     padding: 5px 10px;
