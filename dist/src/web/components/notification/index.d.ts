@@ -1,5 +1,5 @@
 import * as React from "react";
-declare type chainNameType = "ETH_TEST_KOVAN" | "POLYGON_TEST_MUMBAI" | undefined;
+declare type chainNameType = "ETH_TEST_KOVAN" | "POLYGON_TEST_MUMBAI" | "ETH_MAINNET" | "POLYGON_MAINNET" | undefined;
 export declare type NotificationItemProps = {
     notificationTitle: string | undefined;
     notificationBody: string | undefined;
